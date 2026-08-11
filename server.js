@@ -3,15 +3,25 @@ const express = require("express");
 const { Server } = require("socket.io");
 
 const app = express();
-const server = http.createServer();
-const io = new Server(app);
+const server = http.createServer(app);
+const io = new Server(server);
 
+app.use(express.static("public"));
 
+let userCountServerCOunt = 0;
 io.on("connection", (socket) => {
+    ++userCountServerCOunt;
     console.log(`User connected: ${socket.id}`);
 
+    socket.once("connect-user", (data)=>{
+        
+        socket.emit("userid",{
+            userID: socket.id
+        });
+    });
     io.emit("systemMessage", {
-        text: "A user connected."
+        text: "A user connected.",
+        userCount: userCountServerCOunt
     });
 
     socket.on("hello", (data) => {
@@ -24,15 +34,16 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", () => {
         console.log(`User disconnected: ${socket.id}`);
-
+        --userCountServerCOunt;
         io.emit("systemMessage", {
-            text: "A user disconnected."
+            text: "A user disconnected.",
+            userCount: userCountServerCOunt
         });
     });
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT||3000;
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });

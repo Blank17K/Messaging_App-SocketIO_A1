@@ -1,13 +1,20 @@
 {
-  "name": "my-project",
+  "name": "My Messenger App",
   "version": "1.0.0",
-  "description": "",
+  "description": "This application allows connected ussers to send messages. Public Group chat",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
   },
   "keywords": [],
   "author": "Boikanyo_Tshwale",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.2.1",
+    "http": "^0.0.1-security",
+    "nodemon": "^3.1.14",
+    "socket.io": "^4.8.3"
+  }
 }
