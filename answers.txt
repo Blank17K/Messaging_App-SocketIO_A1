@@ -1,10 +1,19 @@
 /** QUESTION 1 **/
-
+Node modules carry a lot of load data in them, so when submmitting the file 
+they can become unsessisarily large as u can make use of the package.json to install missing 
+dependancies. So ultimately there is no need for them to be submmited with
 
 /** QUESTION 2 **/
-
+The start script tells the node app which .js file to run to start up our server/to 
+tell us which script to run the programe.
 
 /** QUESTION 3 **/
+socket.emit() - this is a message sent to and from the server by one soccket think of it as a communication 
+channel between only 2 poeple
 
+io.emit is a server talking to the majority to update active sockets on what is happening, 
+think of this as a broadcast
 
 /** QUESTION 4 **/
+
+validation in the broswer can always be deleted or manipulated since its available to the user.

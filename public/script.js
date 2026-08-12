@@ -20,7 +20,11 @@ socket.on("userid", data =>{
 
 
 // Display received messages
-
+function displayMessage(text){
+    const paragraph = document.createElement("p");
+    paragraph.textContent = text;
+    messages.appendChild(paragraph);
+}
 
 // Display the number of connected users
 function userCountUpdate(count){
@@ -28,11 +32,28 @@ function userCountUpdate(count){
 }
 
 // Display validation errors
-
+function validation(){
+    let username = usernameInput.value.trim();
+    if(username === ""){
+        responseMessage.innerHTML = "Please enter a username.";
+        return false;
+    }
+    let message = messageInput.value.trim();
+    if(message === ""){
+        responseMessage.innerHTML = `${username} Please enter a message.`;
+        return false;
+    }
+    return true;
+}
 
 messageForm.addEventListener("submit", (event) => {
-    socket.emit("hello", {
-        username: "Leanne"
+    event.preventDefault();
+    if(!validation())
+        return;
+    socket.emit("sendMessage", {
+        username: usernameInput.value.trim(),
+        message: messageInput.value,
+        timestamp: new Date().toISOString()
     });
 });
 
@@ -43,6 +64,15 @@ function addMessage(text) {
     messages.appendChild(paragraph);
 }
 
-socket.on('systemMessage', (response)=>{
+socket.on('updateUserCount', (response)=>{
     userCountUpdate(response.userCount);
 });
+
+socket.on('systemMessage', (response)=>{
+    if(response.error){
+        responseMessage.innerHTML = response.error;
+        return;
+    }
+    displayMessage(response.text);
+});
+

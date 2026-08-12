@@ -19,16 +19,24 @@ io.on("connection", (socket) => {
             userID: socket.id
         });
     });
-    io.emit("systemMessage", {
+    io.emit("updateUserCount", {
         text: "A user connected.",
         userCount: userCountServerCOunt
     });
 
-    socket.on("hello", (data) => {
+    socket.on("sendMessage", (data) => {
         console.log(data);
 
+        const validationResult = validation(data.username, data.message);
+        if (validationResult.error) {
+            socket.emit("systemMessage", {
+                text: validationResult.error
+            });
+            return;
+        }
+
         io.emit("systemMessage", {
-            text: `${data.username} says hello!`
+            text: `${getTimeMIN(data.timestamp)}-${data.username}: ${data.message}`,
         });
     });
 
@@ -47,3 +55,20 @@ const PORT = process.env.PORT||3000;
 server.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
+
+function getTimeMIN(timestamp){
+    //let timestamp = new Date().toISOString();
+    timestamp = timestamp.split("T")[1].split(".")[0];
+    return timestamp.substring(0,5);
+}
+function validation(usernameInput, messageInput){
+    let username = usernameInput.value.trim();
+    if(username === ""){
+        return {error: "Please enter a username."};
+    }
+    let message = messageInput.value.trim();
+    if(message === ""){
+        return {error: "Please enter a message."};
+    }
+    return {error: null};
+}
